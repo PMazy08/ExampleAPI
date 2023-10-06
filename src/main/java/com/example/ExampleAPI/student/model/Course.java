@@ -9,9 +9,11 @@ import jakarta.persistence.Table;
 import lombok.Getter;
 
 import lombok.Setter;
+import lombok.ToString;
 
 @Setter
 @Getter
+@ToString
 @Entity(name = "Course")
 
 @Table(name ="course")

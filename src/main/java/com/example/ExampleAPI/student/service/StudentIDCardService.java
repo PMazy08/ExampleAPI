@@ -1,9 +1,11 @@
 package com.example.ExampleAPI.student.service;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
 
 import com.example.ExampleAPI.student.model.StudentIDCard;
 import com.example.ExampleAPI.student.repository.StudentIDCardRepository;
@@ -49,6 +51,10 @@ public class StudentIDCardService implements IStudentIDCard {
 		// TODO Auto-generated method stub
 		studentIDCardRepository.deleteById(id);
 		
+	}
+	
+	public Optional<StudentIDCard> findOptionalById(long id) {
+		return studentIDCardRepository.findOptionalByStudentId(id);
 	}
 	
 

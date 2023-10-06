@@ -1,11 +1,13 @@
 package com.example.ExampleAPI.student.service;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.example.ExampleAPI.student.model.Enrolment;
+
 import com.example.ExampleAPI.student.repository.EnrolmentRepository;
 @Service
 public class EnrolmentService implements IEnrolment {
@@ -47,6 +49,10 @@ public class EnrolmentService implements IEnrolment {
 		// TODO Auto-generated method stub
 		enrolmentRepository.deleteById(id);
 		
+	}
+	
+	public Optional<Enrolment> findOptionalById(long id) {
+		return enrolmentRepository.findOptionalById(id);
 	}
 
 }

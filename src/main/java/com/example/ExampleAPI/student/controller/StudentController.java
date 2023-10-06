@@ -27,8 +27,20 @@ import com.example.ExampleAPI.student.json.CourseListJson;
 import com.example.ExampleAPI.student.json.EnrolmentListJson;
 import com.example.ExampleAPI.student.json.StudentIDCardListJson;
 import com.example.ExampleAPI.student.json.StudentListJson;
+import com.example.ExampleAPI.student.model.Book;
+import com.example.ExampleAPI.student.model.Course;
+import com.example.ExampleAPI.student.model.Enrolment;
 import com.example.ExampleAPI.student.model.Student;
+import com.example.ExampleAPI.student.model.StudentIDCard;
+import com.example.ExampleAPI.student.payload.BookPayload;
+import com.example.ExampleAPI.student.payload.CoursePayload;
+import com.example.ExampleAPI.student.payload.EnrolmentPayload;
+import com.example.ExampleAPI.student.payload.StudentIDCardPayload;
 import com.example.ExampleAPI.student.payload.StudentPayload;
+import com.example.ExampleAPI.student.service.BookService;
+import com.example.ExampleAPI.student.service.CourseService;
+import com.example.ExampleAPI.student.service.EnrolmentService;
+import com.example.ExampleAPI.student.service.StudentIDCardService;
 import com.example.ExampleAPI.student.service.StudentService;
 
 @RestController
@@ -36,25 +48,32 @@ import com.example.ExampleAPI.student.service.StudentService;
 public class StudentController {
 	@Autowired
 	StudentService studentservice;
+	@Autowired
+	StudentIDCardService studentIdcardservice;
+	@Autowired
+	EnrolmentService enrolmentservice;
+	@Autowired
+	BookService bookservice;
+	@Autowired
+	CourseService courseservice;
+	
 	
 	@Autowired
 	StudentBusiness stdBussiness;
-	
 	@Autowired
 	StudentIDCardBusiness stdIdCardBusiness;
-	
 	@Autowired
 	EnrolmentBusiness enrolmentBusiness;
-	
 	@Autowired
 	BookBusiness bookBusiness;
-	
 	@Autowired
 	CourseBusiness courseBusiness;
 	
 	public StudentController(StudentService studentService) {
 		this.studentservice = studentService;
 	}
+	
+//	student
 	@PostMapping(value = "/students")
 	public ResponseEntity<Void> saveStudent(@RequestBody StudentPayload payload) throws BaseException{
 		stdBussiness.saveStudent(payload);
@@ -81,9 +100,8 @@ public class StudentController {
 		}else {
 			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 		}
-			
-		
 	}
+	
 	@DeleteMapping("/students/{id}")
 	public ResponseEntity<HttpStatus> deleteStudent(@PathVariable("id") long id){
 		try {
@@ -96,25 +114,105 @@ public class StudentController {
 	}
 	
 	
-	
-	@GetMapping(value = "/student/{id}/card")
+//	Card
+	@GetMapping(value = "/students/card")
+	public ResponseEntity<List<StudentIDCardListJson>> findAllStudentIDCards() throws BaseException{
+		return ResponseEntity.ok(stdIdCardBusiness.getListudentIdCard());	
+	}
+	@GetMapping(value = "/students/{id}/card")
 	public ResponseEntity<StudentIDCardListJson> getStudentIdCardByStudentId(@PathVariable("id") long id) throws StudentException{
 		return ResponseEntity.ok(stdIdCardBusiness.getStudenIdCardByStudentId(id));
 	}
+	@PostMapping(value = "/students/card")
+	public ResponseEntity<Void> saveStudentIdCard(@RequestBody StudentIDCardPayload payload) throws BaseException{
+		stdIdCardBusiness.saveStudentIdCard(payload);
+		return new ResponseEntity<>(HttpStatus.CREATED);
+	}
+	@PutMapping("/students/{id}/card")
+	public ResponseEntity<StudentIDCardListJson> updateStudent(@PathVariable("id") long id,
+			@RequestBody StudentIDCardPayload payload){
+		System.out.println(payload.toString());
+		Optional<StudentIDCard> stdIDCardData = studentIdcardservice.findOptionalById(id);
+		if(stdIDCardData.isPresent()) {
+			stdIdCardBusiness.updateStudentIdCard(stdIDCardData.get().getId(), payload);
+			return new ResponseEntity<>(HttpStatus.OK);
+		}else {
+			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+		}
+	}
 	
-	@GetMapping(value = "/student/{id}/enrolment")
+	
+//	Enrolment
+	@GetMapping(value = "/students/{id}/enrolment")
 	public ResponseEntity<EnrolmentListJson> getEnrolmentByStudentId(@PathVariable("id") long id) throws StudentException{
 		return ResponseEntity.ok(enrolmentBusiness.getEnrolmentByStudenId(id));
 	}
+	@PostMapping(value = "/students/enrolment")
+	public ResponseEntity<Void> saveEnrolment(@RequestBody EnrolmentPayload payload) throws BaseException{
+		System.out.println(payload.toString());
+		enrolmentBusiness.saveEnrolment(payload);
+		return new ResponseEntity<>(HttpStatus.CREATED);
+	}
+	@PutMapping("/students/{id}/enrolment")
+	public ResponseEntity<EnrolmentListJson> updateEnrolment(@PathVariable("id") long id,
+			@RequestBody EnrolmentPayload payload){
+		System.out.println(payload.toString());
+		Optional<Enrolment> enrolmentData = enrolmentservice.findOptionalById(id);
+		if(enrolmentData.isPresent()) {
+			enrolmentBusiness.updateEnrolment(enrolmentData.get().getId(), payload);
+			return new ResponseEntity<>(HttpStatus.OK);
+		}else {
+			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+		}
+	}
 	
-	@GetMapping(value = "/student/{id}/book")
+	
+//	Book
+	@GetMapping(value = "/students/{id}/book")
 	public ResponseEntity<BookListJson> getBookByStudentId(@PathVariable("id") long id) throws StudentException{
 		return ResponseEntity.ok(bookBusiness.getBookByStudentId(id));
 	}
+	@PostMapping(value = "/students/book")
+	public ResponseEntity<Void> saveBook(@RequestBody BookPayload payload) throws BaseException{
+		System.out.println(payload.toString());
+		bookBusiness.saveBook(payload);
+		return new ResponseEntity<>(HttpStatus.CREATED);
+	}
+	@PutMapping("/students/book/{id}")
+	public ResponseEntity<BookListJson> updateBook(@PathVariable("id") long id,
+			@RequestBody BookPayload payload){
+		System.out.println(payload.toString());
+		Optional<Book> bookData = bookservice.findOptionalById(id);
+		if(bookData.isPresent()) {
+			bookBusiness.updateBook(bookData.get().getId(), payload);
+			return new ResponseEntity<>(HttpStatus.OK);
+		}else {
+			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+		}
+	}
 	
+//	Course
 	@GetMapping(value = "/course/{id}")
 	public ResponseEntity<CourseListJson> getCourseByStudentId(@PathVariable("id") long id) throws StudentException{
 		return ResponseEntity.ok(courseBusiness.getCourseByStudentId(id));
+	}
+	@PostMapping(value = "/course")
+	public ResponseEntity<Void> saveCourse(@RequestBody CoursePayload payload) throws BaseException{
+		System.out.println(payload.toString());
+		courseBusiness.saveCourse(payload);
+		return new ResponseEntity<>(HttpStatus.CREATED);
+	}
+	@PutMapping("/course/{id}")
+	public ResponseEntity<CourseListJson> updateCourse(@PathVariable("id") long id,
+			@RequestBody CoursePayload payload){
+		System.out.println(payload.toString());
+		Optional<Course> courseData = courseservice.findOptionalById(id);
+		if(courseData.isPresent()) {
+			courseBusiness.updateCourse(courseData.get().getId(), payload);
+			return new ResponseEntity<>(HttpStatus.OK);
+		}else {
+			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+		}
 	}
 	
 	

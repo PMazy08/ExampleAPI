@@ -1,5 +1,6 @@
 package com.example.ExampleAPI.student.payload;
 
+import com.example.ExampleAPI.student.model.Course;
 import com.example.ExampleAPI.student.model.Student;
 
 import lombok.Getter;
@@ -9,7 +10,8 @@ import lombok.ToString;
 @Getter
 @Setter
 @ToString
-public class StudentIDCardPayload {
+public class EnrolmentPayload {
 	private Student studentId;
-	private String cardNumber;
+	private Course courseId;
+
 }

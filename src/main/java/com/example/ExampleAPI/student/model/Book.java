@@ -55,11 +55,10 @@ public class Book {
 
 	
 
-	public Book(Student student, String bookName, LocalDateTime createdAt) {
+	public Book(Student student, String bookName) {
 		super();
 		this.student = student;
 		this.bookName = bookName;
-		this.createdAt = createdAt;
 	}
 	
 }
